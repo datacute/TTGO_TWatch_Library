@@ -359,10 +359,14 @@ public:
     /******************************************
      *              Power
      * ***************************************/
+
 #ifdef LILYGO_WATCH_HAS_AXP202
+    AXP20X_Class *power = nullptr;
+#endif
 
     void trunOnGPS()
     {
+#ifdef LILYGO_WATCH_HAS_AXP202
 #ifdef LILYGO_WATCH_2020_V2
         // 2020 v2 use axp202 ldo 4
         if (power)
@@ -371,10 +375,12 @@ public:
         if (power)
             power->setPowerOutPut(AXP202_LDO3, true);
 #endif
+#endif
     }
 
     void turnOffGPS()
     {
+#ifdef LILYGO_WATCH_HAS_AXP202
 #ifdef LILYGO_WATCH_2020_V2
         // 2020 v2 use axp202 ldo 4
         if (power)
@@ -383,9 +389,11 @@ public:
         if (power)
             power->setPowerOutPut(AXP202_LDO3, false);
 #endif
+#endif
     }
 
 
+#ifdef LILYGO_WATCH_HAS_AXP202
     /*
     * @brief  It will turn off the power supply of all peripherals except ESP32
     * * */
@@ -498,7 +506,7 @@ public:
             tft->writecommand(0x10);
         }
 #ifdef LILYGO_WATCH_HAS_TOUCH
-        touchToSleep();
+        //touchToSleep();
 #endif  /*LILYGO_WATCH_HAS_TOUCH*/
     }
 
@@ -506,7 +514,7 @@ public:
     {
         tft->writecommand(0x10);
 #ifdef LILYGO_WATCH_HAS_TOUCH
-        touchToMonitor();
+        //touchToMonitor();
 #endif  /*LILYGO_WATCH_HAS_TOUCH*/
     }
 
@@ -682,10 +690,6 @@ public:
 
 #ifdef LILYGO_WATCH_HAS_BACKLIGHT
     BackLight *bl = nullptr;
-#endif
-
-#ifdef LILYGO_WATCH_HAS_AXP202
-    AXP20X_Class *power = nullptr;
 #endif
 
 #if defined(LILYGO_WATCH_HAS_DISPLAY)
@@ -1119,6 +1123,8 @@ private:
         if (!touch->begin(Wire1)) {
             log_e("Begin touch FAIL");
         }
+        touch->setMonitorPeriod(250);
+        touch->setMonitorTime(20);
 #endif /*initTouch*/
     }
 
